@@ -3,6 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Bookmark } from "@/lib/raindrop";
 
+import Link from "next/link";
+
 export default async function Home({
   searchParams,
 }: {
@@ -25,13 +27,19 @@ export default async function Home({
       <div className="mb-6">
         <h2 className="text-xl font-semibold mb-2">Filter by Tag:</h2>
         <div className="flex flex-wrap gap-2">
+          <Badge variant="secondary">
+            <Link href="/">All</Link>
+          </Badge>
+
           {allTags.map((tag) => (
             <Badge
               key={tag}
               variant={selectedTag === tag ? "default" : "secondary"}
               className="cursor-pointer"
             >
-              <a href={selectedTag === tag ? "/" : `/?tag=${tag}`}>{tag}</a>
+              <Link href={selectedTag === tag ? "/" : `/?tag=${tag}`}>
+                {tag}
+              </Link>
             </Badge>
           ))}
         </div>
