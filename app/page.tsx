@@ -1,7 +1,7 @@
 import { getAllBookmarks } from "@/lib/raindrop";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import Image from "next/image";
+import { Bookmark } from "@/lib/raindrop";
 
 export default async function Home() {
   const { items: bookmarks } = await getAllBookmarks();
