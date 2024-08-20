@@ -72,11 +72,46 @@ export async function getBookmarkById(id: string): Promise<RaindropResponse> {
 }
 
 export async function getBookmarkByTag(tag: string): Promise<RaindropResponse> {
-  return fetchRaindropData(`/raindrops/tags/${tag}`);
+  return fetchRaindropData(
+    `/raindrops/${process.env.RAINDROP_COLLECTION_ID}?search=[{"key":"tag","val":"${tag}"}]`
+  );
 }
 
 export async function getBookmarkByCollection(
   collection: string
 ): Promise<RaindropResponse> {
-  return fetchRaindropData(`/raindrops/collections/${collection}`);
+  return fetchRaindropData(`/raindrops/${collection}`);
+}
+
+export async function getAllTags(): Promise<string[]> {
+  const response = await fetchRaindropData(
+    `/tags/${process.env.RAINDROP_COLLECTION_ID}`
+  );
+  return response.items.map((item: any) => item._id);
+}
+
+export async function searchBookmarks(
+  query: string
+): Promise<RaindropResponse> {
+  return fetchRaindropData(
+    `/raindrops/${
+      process.env.RAINDROP_COLLECTION_ID
+    }?search=${encodeURIComponent(query)}`
+  );
+}
+
+export async function getRecentBookmarks(
+  limit: number = 10
+): Promise<RaindropResponse> {
+  return fetchRaindropData(
+    `/raindrops/${process.env.RAINDROP_COLLECTION_ID}?sort=-created&perpage=${limit}`
+  );
+}
+
+export async function getBookmarksByDomain(
+  domain: string
+): Promise<RaindropResponse> {
+  return fetchRaindropData(
+    `/raindrops/${process.env.RAINDROP_COLLECTION_ID}?search=[{"key":"domain","val":"${domain}"}]`
+  );
 }

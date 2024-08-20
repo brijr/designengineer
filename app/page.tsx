@@ -1,14 +1,41 @@
-import { getAllBookmarks } from "@/lib/raindrop";
+import { getAllBookmarks, getBookmarkByTag, getAllTags } from "@/lib/raindrop";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Bookmark } from "@/lib/raindrop";
 
-export default async function Home() {
-  const { items: bookmarks } = await getAllBookmarks();
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: { tag?: string };
+}) {
+  const { items: allBookmarks } = await getAllBookmarks();
+  const selectedTag = searchParams.tag || null;
+
+  let bookmarks = allBookmarks;
+  if (selectedTag) {
+    const { items: filteredBookmarks } = await getBookmarkByTag(selectedTag);
+    bookmarks = filteredBookmarks;
+  }
+
+  const allTags = await getAllTags();
 
   return (
     <main className="p-12 bg-background text-foreground">
       <h1 className="text-3xl font-bold mb-6">My Bookmarks</h1>
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold mb-2">Filter by Tag:</h2>
+        <div className="flex flex-wrap gap-2">
+          {allTags.map((tag) => (
+            <Badge
+              key={tag}
+              variant={selectedTag === tag ? "default" : "secondary"}
+              className="cursor-pointer"
+            >
+              <a href={selectedTag === tag ? "/" : `/?tag=${tag}`}>{tag}</a>
+            </Badge>
+          ))}
+        </div>
+      </div>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {bookmarks.map((bookmark) => (
           <BookmarkCard key={bookmark._id} bookmark={bookmark} />
@@ -39,7 +66,7 @@ const BookmarkCard = ({ bookmark }: { bookmark: Bookmark }) => {
         <div className="flex flex-wrap gap-2">
           {bookmark.tags.map((tag: string) => (
             <Badge key={tag} variant="secondary">
-              {tag}
+              <a href={`/?tag=${tag}`}>{tag}</a>
             </Badge>
           ))}
         </div>
