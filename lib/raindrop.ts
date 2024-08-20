@@ -1,7 +1,9 @@
 const BASE_URL = "https://api.raindrop.io/rest/v1";
+import { createSlug } from './utils';
 
 export interface Bookmark {
   _id: number;
+  slug: string;
   link: string;
   title: string;
   excerpt: string;
@@ -64,11 +66,16 @@ async function fetchRaindropData(endpoint: string): Promise<RaindropResponse> {
 }
 
 export async function getAllBookmarks(): Promise<RaindropResponse> {
-  return fetchRaindropData(`/raindrops/${process.env.RAINDROP_COLLECTION_ID}`);
+  const response = await fetchRaindropData(`/raindrops/${process.env.RAINDROP_COLLECTION_ID}`);
+  response.items = response.items.map(bookmark => ({
+    ...bookmark,
+    slug: createSlug(bookmark.title)
+  }));
+  return response;
 }
 
 export async function getBookmarkById(id: string): Promise<RaindropResponse> {
-  return fetchRaindropData(`/raindrops/${id}`);
+  return fetchRaindropData(`/raindrop/${id}`);
 }
 
 export async function getBookmarkByTag(tag: string): Promise<RaindropResponse> {
@@ -114,4 +121,10 @@ export async function getBookmarksByDomain(
   return fetchRaindropData(
     `/raindrops/${process.env.RAINDROP_COLLECTION_ID}?search=[{"key":"domain","val":"${domain}"}]`
   );
+}
+
+export async function getBookmarkBySlug(slug: string): Promise<RaindropResponse> {
+  const { items } = await getAllBookmarks();
+  const bookmark = items.find(item => item.slug === slug);
+  return { result: true, items: bookmark ? [bookmark] : [], count: bookmark ? 1 : 0, collectionId: 0 };
 }

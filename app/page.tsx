@@ -59,14 +59,9 @@ const BookmarkCard = ({ bookmark }: { bookmark: Bookmark }) => {
       <img src={bookmark.cover} alt={bookmark.title} width={100} height={100} />
       <CardHeader>
         <CardTitle>
-          <a
-            href={bookmark.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-500 hover:underline"
-          >
+          <Link href={`/${bookmark.slug}`} className="text-blue-500 hover:underline">
             {bookmark.title}
-          </a>
+          </Link>
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -74,7 +69,7 @@ const BookmarkCard = ({ bookmark }: { bookmark: Bookmark }) => {
         <div className="flex flex-wrap gap-2">
           {bookmark.tags.map((tag: string) => (
             <Badge key={tag} variant="secondary">
-              <a href={`/?tag=${tag}`}>{tag}</a>
+              <Link href={`/?tag=${tag}`}>{tag}</Link>
             </Badge>
           ))}
         </div>
