@@ -66,12 +66,23 @@ async function fetchRaindropData(endpoint: string): Promise<RaindropResponse> {
 }
 
 export async function getAllBookmarks(): Promise<RaindropResponse> {
-  const response = await fetchRaindropData(`/raindrops/${process.env.RAINDROP_COLLECTION_ID}`);
-  response.items = response.items.map(bookmark => ({
-    ...bookmark,
-    slug: createSlug(bookmark.title)
-  }));
-  return response;
+  let allBookmarks: Bookmark[] = [];
+  let page = 0;
+  let hasMore = true;
+
+  while (hasMore) {
+    const response = await fetchRaindropData(`/raindrops/${process.env.RAINDROP_COLLECTION_ID}?page=${page}&perpage=50`);
+    allBookmarks = [...allBookmarks, ...response.items];
+    page++;
+    hasMore = response.items.length === 50;
+  }
+
+  return {
+    result: true,
+    items: allBookmarks,
+    count: allBookmarks.length,
+    collectionId: parseInt(process.env.RAINDROP_COLLECTION_ID || '0'),
+  };
 }
 
 export async function getBookmarkById(id: string): Promise<RaindropResponse> {

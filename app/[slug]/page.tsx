@@ -1,7 +1,5 @@
 import { getBookmarkBySlug, getAllBookmarks } from "@/lib/raindrop";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import Link from "next/link";
 
 export async function generateStaticParams() {
   const { items: bookmarks } = await getAllBookmarks();

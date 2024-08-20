@@ -59,7 +59,10 @@ const BookmarkCard = ({ bookmark }: { bookmark: Bookmark }) => {
       <img src={bookmark.cover} alt={bookmark.title} width={100} height={100} />
       <CardHeader>
         <CardTitle>
-          <Link href={`/${bookmark.slug}`} className="text-blue-500 hover:underline">
+          <Link
+            href={`/${bookmark.slug}`}
+            className="text-blue-500 hover:underline"
+          >
             {bookmark.title}
           </Link>
         </CardTitle>
